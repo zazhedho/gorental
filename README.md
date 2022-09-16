@@ -1,7 +1,7 @@
 # gorental
 
 <h1 align="center">
-  VEHICLE RENT RESTfull API With Gorilla/mux, Gorm
+  Vehicle-Rent RESTfull API With Gorilla/mux, Gorm
 </h1>
 
 ## 🛠️ Installation Steps
