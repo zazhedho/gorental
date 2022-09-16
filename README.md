@@ -1,7 +1,7 @@
 # gorental
 
 <h1 align="center">
-  Golang Restfull Api With Gorilla/mux
+  VEHICLE RENT RESTfull API With Gorilla/mux, Gorm
 </h1>
 
 ## 🛠️ Installation Steps
