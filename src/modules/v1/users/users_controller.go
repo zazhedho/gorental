@@ -9,17 +9,17 @@ import (
 )
 
 type user_ctrl struct {
-	srv interfaces.UserServive
+	svc interfaces.UserService
 }
 
-func NewCtrl(repo interfaces.UserServive) *user_ctrl {
-	return &user_ctrl{srv: repo}
+func NewCtrl(repo interfaces.UserService) *user_ctrl {
+	return &user_ctrl{svc: repo}
 }
 
-func (re *user_ctrl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+func (c *user_ctrl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
-	data, err := re.srv.GetAllUsers()
+	data, err := c.svc.GetAllUsers()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -27,7 +27,7 @@ func (re *user_ctrl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func (re *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
+func (c *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	var datas models.User
@@ -36,7 +36,7 @@ func (re *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	data, err := re.srv.AddUser(&datas)
+	data, err := c.svc.AddUser(&datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -44,7 +44,7 @@ func (re *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func (re *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (c *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	var datas models.User
@@ -53,7 +53,7 @@ func (re *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	data, err := re.srv.UpdateUser(r, &datas)
+	data, err := c.svc.UpdateUser(r, &datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
@@ -61,12 +61,12 @@ func (re *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func (re *user_ctrl) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (c *user_ctrl) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	var datas models.User
 
-	data, err := re.srv.DeleteUser(r, &datas)
+	data, err := c.svc.DeleteUser(r, &datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}

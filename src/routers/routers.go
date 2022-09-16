@@ -5,7 +5,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/zazhedho/gorental/src/database/orm"
+	"github.com/zazhedho/gorental/src/modules/v1/histories"
 	"github.com/zazhedho/gorental/src/modules/v1/users"
+	"github.com/zazhedho/gorental/src/modules/v1/vehicles"
 )
 
 func New() (*mux.Router, error) {
@@ -17,6 +19,8 @@ func New() (*mux.Router, error) {
 	}
 
 	users.New(mainRoute, db)
+	vehicles.New(mainRoute, db)
+	histories.New(mainRoute, db)
 
 	return mainRoute, nil
 }
