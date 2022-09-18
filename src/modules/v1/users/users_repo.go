@@ -30,13 +30,19 @@ func (re *user_repo) FindAllUsers() (*models.Users, error) {
 }
 
 func (re *user_repo) SaveUser(data *models.User) (*models.User, error) {
-	result := re.db.Create(data)
+	var exists models.Users
 
+	getNameEmail := re.db.Where("name = ? OR email = ?", data.Name, data.Email).Find(&exists)
+	if getNameEmail.RowsAffected != 0 {
+		return nil, errors.New("username atau email sudah terdaftar")
+	}
+
+	result := re.db.Create(data)
 	if result.Error != nil {
 		return nil, errors.New("gagal menambah data")
 	}
 
-	return data, nil
+	return nil, nil
 }
 
 func (re *user_repo) ChangeUser(r *http.Request, data *models.User) (*models.User, error) {
@@ -47,7 +53,11 @@ func (re *user_repo) ChangeUser(r *http.Request, data *models.User) (*models.Use
 		return nil, errors.New("gagal update data")
 	}
 
-	return data, nil
+	if result.RowsAffected < 1 {
+		return nil, errors.New("data user tidak ditemukan")
+	}
+
+	return nil, nil
 }
 
 func (re *user_repo) RemoveUser(r *http.Request, data *models.User) (*models.User, error) {
@@ -55,8 +65,12 @@ func (re *user_repo) RemoveUser(r *http.Request, data *models.User) (*models.Use
 	result := re.db.Where("name = ?", vars["name"]).Delete(&data)
 
 	if result.Error != nil {
-		return nil, errors.New("gagal hapus data")
+		return nil, errors.New("gagal menghapus data")
 	}
 
-	return data, nil
+	if result.RowsAffected < 1 {
+		return nil, errors.New("data user tidak ditemukan")
+	}
+
+	return nil, nil
 }

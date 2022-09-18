@@ -6,7 +6,7 @@ import (
 )
 
 func New(rt *mux.Router, db *gorm.DB) {
-	route := rt.PathPrefix("/users").Subrouter()
+	route := rt.PathPrefix("/api/users").Subrouter()
 
 	repo := NewRepo(db)
 	svc := NewService(repo)
@@ -16,4 +16,5 @@ func New(rt *mux.Router, db *gorm.DB) {
 	route.HandleFunc("/", ctrl.AddUser).Methods("POST")
 	route.HandleFunc("/{name}", ctrl.UpdateUser).Methods("PUT")
 	route.HandleFunc("/{name}", ctrl.DeleteUser).Methods("DELETE")
+
 }

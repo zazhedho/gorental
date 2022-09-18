@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/zazhedho/gorental/src/database/orm/models"
+	"github.com/zazhedho/gorental/src/helpers"
 )
 
 type UserRepo interface {
@@ -14,8 +15,8 @@ type UserRepo interface {
 }
 
 type UserService interface {
-	GetAllUsers() (*models.Users, error)
-	AddUser(data *models.User) (*models.User, error)
-	UpdateUser(r *http.Request, data *models.User) (*models.User, error)
-	DeleteUser(r *http.Request, data *models.User) (*models.User, error)
+	GetAllUsers() (*helpers.Response, error)
+	AddUser(data *models.User) (*helpers.Response, error)
+	UpdateUser(r *http.Request, data *models.User) (*helpers.Response, error)
+	DeleteUser(r *http.Request, data *models.User) (*helpers.Response, error)
 }

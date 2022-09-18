@@ -73,3 +73,26 @@ func (c *vehicle_ctrl) DeleteVehicle(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(data)
 }
+
+func (c *vehicle_ctrl) GetVehicleName(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+	var datas models.Vehicles
+
+	data, err := c.svc.GetVehicleName(r, &datas)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	json.NewEncoder(w).Encode(data)
+}
+
+func (c *vehicle_ctrl) PopularVehicle(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "application/json")
+
+	data, err := c.svc.PopularVehicle()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	json.NewEncoder(w).Encode(data)
+}

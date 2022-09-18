@@ -14,6 +14,7 @@ type Vehicle struct {
 	Image       string    `json:"image"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
+	Rating      float32   `json:"rating"`
 }
 
 type Vehicles []Vehicle

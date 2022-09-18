@@ -23,7 +23,7 @@ func (re *history_repo) FindAllHistories() (*models.Histories, error) {
 	result := re.db.Preload("User").Preload("Vehicle").Order("created_at desc").Find(&data)
 
 	if result.Error != nil {
-		return nil, errors.New("gagal mengambil data")
+		return nil, errors.New("data tidak dapat ditampilkan")
 	}
 
 	return &data, nil
@@ -36,7 +36,7 @@ func (re *history_repo) SaveHistory(data *models.History) (*models.History, erro
 		return nil, errors.New("gagal menambah data")
 	}
 
-	return data, nil
+	return nil, nil
 }
 
 func (re *history_repo) ChangeHistory(r *http.Request, data *models.History) (*models.History, error) {
@@ -47,7 +47,11 @@ func (re *history_repo) ChangeHistory(r *http.Request, data *models.History) (*m
 		return nil, errors.New("gagal update data")
 	}
 
-	return data, nil
+	if result.RowsAffected < 1 {
+		return nil, errors.New("id history tidak ditemukan")
+	}
+
+	return nil, nil
 }
 
 func (re *history_repo) RemoveHistory(r *http.Request, data *models.History) (*models.History, error) {
@@ -55,7 +59,28 @@ func (re *history_repo) RemoveHistory(r *http.Request, data *models.History) (*m
 	result := re.db.Delete(data, vars["history_id"])
 
 	if result.Error != nil {
-		return nil, errors.New("gagal hapus data")
+		return nil, errors.New("gagal menghapus data")
+	}
+
+	if result.RowsAffected < 1 {
+		return nil, errors.New("id history tidak ditemukan")
+	}
+
+	return nil, nil
+}
+
+// Search
+func (re *history_repo) FindHistoryByVehicleId(r *http.Request, data *models.Histories) (*models.Histories, error) {
+
+	vars := r.URL.Query().Get("vehicle_id")
+	result := re.db.Preload("User").Preload("Vehicle").Order("created_at desc").Where("vehicle_id = ?", vars).Find(&data)
+
+	if result.Error != nil {
+		return nil, errors.New("gagal mengambil data")
+	}
+
+	if result.RowsAffected < 1 {
+		return nil, errors.New("data tidak ditemukan")
 	}
 
 	return data, nil

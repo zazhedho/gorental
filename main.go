@@ -20,11 +20,10 @@ func main() {
 	mainRoute, err := routers.New()
 	if err != nil {
 		log.Fatal(err)
-
 	}
 
-	PORT := os.Getenv("PORT")
-	fmt.Println("App running on port", PORT)
-	http.ListenAndServe(PORT, mainRoute)
+	APP_PORT := os.Getenv("APP_PORT")
+	fmt.Println("App running on port", APP_PORT)
+	http.ListenAndServe(APP_PORT, mainRoute)
 
 }
