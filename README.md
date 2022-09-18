@@ -54,4 +54,4 @@ go run *.go
 
 ## 🚀 About Me
 
-- Linkedin : [zaiduszhuhur](https://www.linkedin.com/in/zaidus-zhuhur/)
+- Linkedin : [Zaidus Zhuhur](https://www.linkedin.com/in/zaidus-zhuhur/)
