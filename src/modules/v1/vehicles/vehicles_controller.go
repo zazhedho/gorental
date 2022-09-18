@@ -5,8 +5,11 @@ import (
 	"net/http"
 
 	"github.com/zazhedho/gorental/src/database/orm/models"
+	"github.com/zazhedho/gorental/src/helpers"
 	"github.com/zazhedho/gorental/src/interfaces"
 )
+
+var response helpers.Response
 
 type vehicle_ctrl struct {
 	svc interfaces.VehicleService
@@ -21,10 +24,10 @@ func (c *vehicle_ctrl) GetAllVehicles(w http.ResponseWriter, r *http.Request) {
 
 	data, err := c.svc.GetAllVehicles()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		response.ResponseJSON(w, 400, "Tidak dapat menampilkan data", data, err)
+	} else {
+		response.ResponseJSON(w, 200, "Success", data, err)
 	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *vehicle_ctrl) AddVehicle(w http.ResponseWriter, r *http.Request) {
@@ -34,14 +37,14 @@ func (c *vehicle_ctrl) AddVehicle(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		data, err := c.svc.AddVehicle(&datas)
+		if err != nil {
+			response.ResponseJSON(w, 400, "Tidak dapat menambahkan data", data, err)
+		} else {
+			response.ResponseJSON(w, 200, "success", data, err)
+		}
 	}
-
-	data, err := c.svc.AddVehicle(&datas)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *vehicle_ctrl) UpdateVehicle(w http.ResponseWriter, r *http.Request) {
@@ -51,14 +54,15 @@ func (c *vehicle_ctrl) UpdateVehicle(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		data, err := c.svc.UpdateVehicle(r, &datas)
+		if err != nil {
+			response.ResponseJSON(w, 400, "Tidak dapat mengubah data", data, err)
+		} else {
+			response.ResponseJSON(w, 200, "success", data, err)
+		}
 	}
 
-	data, err := c.svc.UpdateVehicle(r, &datas)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *vehicle_ctrl) DeleteVehicle(w http.ResponseWriter, r *http.Request) {
@@ -68,10 +72,10 @@ func (c *vehicle_ctrl) DeleteVehicle(w http.ResponseWriter, r *http.Request) {
 
 	data, err := c.svc.DeleteVehicle(r, &datas)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		response.ResponseJSON(w, 400, "Tidak dapat menghapus data", data, err)
+	} else {
+		response.ResponseJSON(w, 200, "success", data, err)
 	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *vehicle_ctrl) GetVehicleName(w http.ResponseWriter, r *http.Request) {
@@ -80,10 +84,10 @@ func (c *vehicle_ctrl) GetVehicleName(w http.ResponseWriter, r *http.Request) {
 
 	data, err := c.svc.GetVehicleName(r, &datas)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		response.ResponseJSON(w, 400, "Tidak dapat menampilkan data", data, err)
+	} else {
+		response.ResponseJSON(w, 200, "success", data, err)
 	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *vehicle_ctrl) PopularVehicle(w http.ResponseWriter, r *http.Request) {
@@ -91,8 +95,8 @@ func (c *vehicle_ctrl) PopularVehicle(w http.ResponseWriter, r *http.Request) {
 
 	data, err := c.svc.PopularVehicle()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		response.ResponseJSON(w, 400, "Tidak dapat menampilkan data", data, err)
+	} else {
+		response.ResponseJSON(w, 200, "success", data, err)
 	}
-
-	json.NewEncoder(w).Encode(data)
 }

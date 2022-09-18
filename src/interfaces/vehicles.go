@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/zazhedho/gorental/src/database/orm/models"
-	"github.com/zazhedho/gorental/src/helpers"
 )
 
 type VehicleRepo interface {
@@ -17,10 +16,10 @@ type VehicleRepo interface {
 }
 
 type VehicleService interface {
-	GetAllVehicles() (*helpers.Response, error)
-	AddVehicle(data *models.Vehicle) (*helpers.Response, error)
-	UpdateVehicle(r *http.Request, data *models.Vehicle) (*helpers.Response, error)
-	DeleteVehicle(r *http.Request, data *models.Vehicle) (*helpers.Response, error)
-	GetVehicleName(r *http.Request, data *models.Vehicles) (*helpers.Response, error)
-	PopularVehicle() (*helpers.Response, error)
+	GetAllVehicles() (*models.Vehicles, error)
+	AddVehicle(data *models.Vehicle) (*models.Vehicle, error)
+	UpdateVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error)
+	DeleteVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error)
+	GetVehicleName(r *http.Request, data *models.Vehicles) (*models.Vehicles, error)
+	PopularVehicle() (*models.Vehicles, error)
 }

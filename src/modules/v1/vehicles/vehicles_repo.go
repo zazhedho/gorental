@@ -72,8 +72,7 @@ func (re *vehicle_repo) RemoveVehicle(r *http.Request, data *models.Vehicle) (*m
 func (re *vehicle_repo) FindVehicleName(r *http.Request, data *models.Vehicles) (*models.Vehicles, error) {
 
 	vars := strings.ToLower(r.URL.Query().Get("name"))
-	query := "%" + vars + "%"
-	result := re.db.Order("created_at desc").Where("LOWER(name) LIKE ?", query).Find(&data)
+	result := re.db.Order("created_at desc").Where("LOWER(name) LIKE ?", "%"+vars+"%").Find(&data)
 
 	if result.Error != nil {
 		return nil, errors.New("gagal mengambil data")

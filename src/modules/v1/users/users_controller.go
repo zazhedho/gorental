@@ -5,8 +5,11 @@ import (
 	"net/http"
 
 	"github.com/zazhedho/gorental/src/database/orm/models"
+	"github.com/zazhedho/gorental/src/helpers"
 	"github.com/zazhedho/gorental/src/interfaces"
 )
+
+var response helpers.Response
 
 type user_ctrl struct {
 	svc interfaces.UserService
@@ -21,10 +24,10 @@ func (c *user_ctrl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 	data, err := c.svc.GetAllUsers()
 	if err != nil {
-		response.ResponseJSON(400, "Tidak dapat menampilkan data").Send(w)
+		response.ResponseJSON(w, 400, "Tidak dapat menampilkan data", data, err)
+	} else {
+		response.ResponseJSON(w, 200, "successfully", data, err)
 	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
@@ -34,14 +37,16 @@ func (c *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
+	} else {
+		data, err := c.svc.AddUser(&datas)
+		if err != nil {
+			response.ResponseJSON(w, 400, "", data, err)
+		} else {
+
+			response.ResponseJSON(w, 201, "user has been created", data, err)
+		}
 	}
 
-	data, err := c.svc.AddUser(&datas)
-	if err != nil {
-		response.ResponseJSON(400, "Tidak dapat menambahkan data").Send(w)
-	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -51,25 +56,25 @@ func (c *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&datas)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
-	}
+	} else {
+		data, err := c.svc.UpdateUser(r, &datas)
+		if err != nil {
+			response.ResponseJSON(w, 400, "Tidak dapat memperbarui data", data, err)
+		} else {
 
-	data, err := c.svc.UpdateUser(r, &datas)
-	if err != nil {
-		response.ResponseJSON(400, "Tidak dapat memperbarui data").Send(w)
+			response.ResponseJSON(w, 200, "user has been updated", data, err)
+		}
 	}
-
-	json.NewEncoder(w).Encode(data)
 }
 
 func (c *user_ctrl) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	var datas models.User
-
 	data, err := c.svc.DeleteUser(r, &datas)
 	if err != nil {
-		response.ResponseJSON(400, "Tidak dapat menghapus data").Send(w)
+		response.ResponseJSON(w, 400, "Tidak dapat menghapus data", data, err)
+	} else {
+		response.ResponseJSON(w, 200, "deleted successfully", data, err)
 	}
-
-	json.NewEncoder(w).Encode(data)
 }

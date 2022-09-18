@@ -53,7 +53,7 @@ func (re *user_repo) ChangeUser(r *http.Request, data *models.User) (*models.Use
 		return nil, errors.New("gagal update data")
 	}
 
-	if result.RowsAffected < 1 {
+	if result.RowsAffected == 0 {
 		return nil, errors.New("data user tidak ditemukan")
 	}
 
@@ -62,13 +62,13 @@ func (re *user_repo) ChangeUser(r *http.Request, data *models.User) (*models.Use
 
 func (re *user_repo) RemoveUser(r *http.Request, data *models.User) (*models.User, error) {
 	vars := mux.Vars(r)
-	result := re.db.Where("name = ?", vars["name"]).Delete(&data)
+	result := re.db.Where("name = ?", vars["name"]).Delete(data)
 
 	if result.Error != nil {
 		return nil, errors.New("gagal menghapus data")
 	}
 
-	if result.RowsAffected < 1 {
+	if result.RowsAffected == 0 {
 		return nil, errors.New("data user tidak ditemukan")
 	}
 
