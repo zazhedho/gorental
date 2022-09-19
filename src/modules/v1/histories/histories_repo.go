@@ -20,7 +20,11 @@ func NewRepo(db *gorm.DB) *history_repo {
 func (re *history_repo) FindAllHistories() (*models.Histories, error) {
 	var data models.Histories
 
-	result := re.db.Preload("User").Preload("Vehicle").Order("created_at desc").Find(&data)
+	result := re.db.Preload("User", func(db *gorm.DB) *gorm.DB {
+		return re.db.Select("user_id", "name")
+	}).Preload("Vehicle", func(db *gorm.DB) *gorm.DB {
+		return re.db.Select("vehicle_id", "name", "rating")
+	}).Order("created_at desc").Find(&data)
 
 	if result.Error != nil {
 		return nil, errors.New("data tidak dapat ditampilkan")

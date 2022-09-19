@@ -46,7 +46,6 @@ func (c *user_ctrl) AddUser(w http.ResponseWriter, r *http.Request) {
 			response.ResponseJSON(w, 201, "user has been created", data, err)
 		}
 	}
-
 }
 
 func (c *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -60,6 +59,7 @@ func (c *user_ctrl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		data, err := c.svc.UpdateUser(r, &datas)
 		if err != nil {
 			response.ResponseJSON(w, 400, "Tidak dapat memperbarui data", data, err)
+			return
 		} else {
 
 			response.ResponseJSON(w, 200, "user has been updated", data, err)
