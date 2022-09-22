@@ -1,0 +1,36 @@
+
+#### Get Vehicle ####
+GET http://localhost:8080/api/vehicles/ HTTP/1.1
+Content-type: application/json
+
+
+#### Add Vehicle ####
+POST http://localhost:8080/api/vehicles/ HTTP/1.1
+Content-Type: : application/json
+
+{
+  "name" : "New Vario 2",
+  "location" : "Jakarta",
+  "description" : "lorem ipsum",
+  "price" : 200000,
+  "status" : "available",
+  "stock" : 7,
+  "category" : "motorcycle",
+  "image" : "newvario-2.jpg",
+  "rating" : 4.2
+}
+
+#### Update Vehicle ####
+PUT http://localhost:8080/api/vehicles/19 HTTP/1.1
+Content-Type: : application/json
+
+{
+  "description" : "lorem ipsum",
+  "price" : 250000,
+  "status" : "available",
+  "stock" : 1
+}
+
+#### Delete Vehicle ####
+DELETE http://localhost:8080/api/vehicles/19 HTTP/1.1
+Content-Type: : application/json

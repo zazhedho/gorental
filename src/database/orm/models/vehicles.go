@@ -3,8 +3,8 @@ package models
 import "time"
 
 type Vehicle struct {
-	VehicleId   uint      `gorm:"primaryKey" json:"id"`
-	Name        string    `json:"name"`
+	VehicleId   uint      `gorm:"primaryKey" json:"id,omitempty"`
+	Name        string    `json:"name,omitempty"`
 	Location    string    `json:"location,omitempty"`
 	Description string    `json:"description,omitempty"`
 	Price       int       `json:"price,omitempty"`

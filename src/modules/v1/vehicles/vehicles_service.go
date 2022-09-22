@@ -1,9 +1,8 @@
 package vehicles
 
 import (
-	"net/http"
-
 	"github.com/zazhedho/gorental/src/database/orm/models"
+	"github.com/zazhedho/gorental/src/helpers"
 	"github.com/zazhedho/gorental/src/interfaces"
 )
 
@@ -15,56 +14,63 @@ func NewService(repo interfaces.VehicleRepo) *vehicle_service {
 	return &vehicle_service{repo}
 }
 
-func (s *vehicle_service) GetAllVehicles() (*models.Vehicles, error) {
-	data, err := s.repo.FindAllVehicles()
+func (s *vehicle_service) GetAllVehicles() *helpers.Response {
+	result, err := s.repo.FindAllVehicles()
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 404, true)
 	}
-
-	return data, nil
+	return helpers.New(result, 200, false)
 }
 
-func (s *vehicle_service) AddVehicle(data *models.Vehicle) (*models.Vehicle, error) {
-	data, err := s.repo.SaveVehicle(data)
+func (s *vehicle_service) AddVehicle(data *models.Vehicle) *helpers.Response {
+	result, err := s.repo.SaveVehicle(data)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-
-	return data, nil
+	return helpers.New(result, 201, false)
 }
 
-func (s *vehicle_service) UpdateVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error) {
-	data, err := s.repo.ChangeVehicle(r, data)
+func (s *vehicle_service) UpdateVehicle(id int, data *models.Vehicle) *helpers.Response {
+	result, err := s.repo.ChangeVehicle(id, data)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 404, true)
 	}
 
-	return data, nil
+	return helpers.New(result, 200, false)
 }
 
-func (s *vehicle_service) DeleteVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error) {
-	data, err := s.repo.RemoveVehicle(r, data)
+func (s *vehicle_service) DeleteVehicle(id int, data *models.Vehicle) *helpers.Response {
+	result, err := s.repo.RemoveVehicle(id, data)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 404, true)
 	}
 
-	return data, nil
+	return helpers.New(result, 200, false)
 }
 
-func (s *vehicle_service) GetVehicleName(r *http.Request, data *models.Vehicles) (*models.Vehicles, error) {
-	data, err := s.repo.FindVehicleName(r, data)
+func (s *vehicle_service) GetVehicleName(name string, data *models.Vehicles) *helpers.Response {
+	result, err := s.repo.FindVehicleName(name, data)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 404, true)
 	}
 
-	return data, nil
+	return helpers.New(result, 200, false)
 }
 
-func (s *vehicle_service) PopularVehicle() (*models.Vehicles, error) {
-	data, err := s.repo.PopularVehicle()
+func (s *vehicle_service) SortByLocation(location string, data *models.Vehicles) *helpers.Response {
+	result, err := s.repo.SortByLocation(location, data)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
 
-	return data, nil
+	return helpers.New(result, 200, false)
+}
+
+func (s *vehicle_service) PopularVehicle() *helpers.Response {
+	result, err := s.repo.PopularVehicle()
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+
+	return helpers.New(result, 200, false)
 }

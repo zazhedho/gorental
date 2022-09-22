@@ -3,88 +3,77 @@ package histories
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/zazhedho/gorental/src/database/orm/models"
 	"github.com/zazhedho/gorental/src/helpers"
 	"github.com/zazhedho/gorental/src/interfaces"
 )
 
-var response helpers.Response
-
 type history_ctrl struct {
 	svc interfaces.HistoryService
 }
 
-func NewCtrl(repo interfaces.HistoryService) *history_ctrl {
-	return &history_ctrl{svc: repo}
+func NewCtrl(ctrl interfaces.HistoryService) *history_ctrl {
+	return &history_ctrl{svc: ctrl}
 }
 
 func (c *history_ctrl) GetAllHistories(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/json")
-
-	data, err := c.svc.GetAllHistories()
-	if err != nil {
-		response.ResponseJSON(w, 400, "Tidak dapat mengambil data", data, err)
-	} else {
-		response.ResponseJSON(w, 200, "success", data, err)
-	}
+	c.svc.GetAllHistories().Send(w)
 }
 
 func (c *history_ctrl) AddHistory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/json")
 
-	var datas models.History
-	err := json.NewDecoder(r.Body).Decode(&datas)
+	var data models.History
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else {
-		data, err := c.svc.AddHistory(&datas)
-		if err != nil {
-			response.ResponseJSON(w, 400, "Tidak dapat menambahkan data", data, err)
-		} else {
-			response.ResponseJSON(w, 200, "success", data, err)
-		}
+		helpers.New(err, 500, true)
+		return
 	}
+	c.svc.AddHistory(&data).Send(w)
 }
 
 func (c *history_ctrl) UpdateHistory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/json")
 
-	var datas models.History
-	err := json.NewDecoder(r.Body).Decode(&datas)
+	var data models.History
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-	} else {
-		data, err := c.svc.UpdateHistory(r, &datas)
-		if err != nil {
-			response.ResponseJSON(w, 400, "Tidak dapat mengubah data", data, err)
-		} else {
-			response.ResponseJSON(w, 200, "success", data, err)
-		}
+		helpers.New(err, 500, true)
+		return
 	}
+
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	if err != nil {
+		helpers.New(err, 500, true)
+		return
+	}
+	c.svc.UpdateHistory(id, &data).Send(w)
 
 }
 
 func (c *history_ctrl) DeleteHistory(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/json")
 
-	var datas models.History
-	data, err := c.svc.DeleteHistory(r, &datas)
+	var data models.History
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
 	if err != nil {
-		response.ResponseJSON(w, 400, "Tidak dapat menghapus data", data, err)
-	} else {
-		response.ResponseJSON(w, 200, "success", data, err)
+		helpers.New(err, 500, true)
+		return
 	}
+
+	c.svc.DeleteHistory(id, &data).Send(w)
 }
 
 func (c *history_ctrl) GetHistoryByVehicleId(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-type", "application/json")
+	var data models.Histories
 
-	var datas models.Histories
-	data, err := c.svc.GetHistoryByVehicleId(r, &datas)
+	vars := r.URL.Query().Get("vehicle_id")
+	id, err := strconv.Atoi(string(vars))
 	if err != nil {
-		response.ResponseJSON(w, 400, "Tidak dapat menampilkan data", data, err)
-	} else {
-		response.ResponseJSON(w, 200, "success", data, err)
+		helpers.New(err, 500, true)
 	}
+
+	c.svc.GetHistoryByVehicleId(id, &data).Send(w)
 }

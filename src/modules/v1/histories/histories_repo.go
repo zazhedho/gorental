@@ -2,9 +2,7 @@ package histories
 
 import (
 	"errors"
-	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/zazhedho/gorental/src/database/orm/models"
 	"gorm.io/gorm"
 )
@@ -21,9 +19,9 @@ func (re *history_repo) FindAllHistories() (*models.Histories, error) {
 	var data models.Histories
 
 	result := re.db.Preload("User", func(db *gorm.DB) *gorm.DB {
-		return re.db.Select("user_id", "name")
+		return re.db.Select("user_id", "username", "created_at", "updated_at")
 	}).Preload("Vehicle", func(db *gorm.DB) *gorm.DB {
-		return re.db.Select("vehicle_id", "name", "rating")
+		return re.db.Select("vehicle_id", "name", "rating", "created_at", "updated_at")
 	}).Order("created_at desc").Find(&data)
 
 	if result.Error != nil {
@@ -35,38 +33,35 @@ func (re *history_repo) FindAllHistories() (*models.Histories, error) {
 
 func (re *history_repo) SaveHistory(data *models.History) (*models.History, error) {
 	result := re.db.Create(data)
-
 	if result.Error != nil {
 		return nil, errors.New("gagal menambah data")
 	}
 
-	return nil, nil
+	return data, nil
 }
 
-func (re *history_repo) ChangeHistory(r *http.Request, data *models.History) (*models.History, error) {
-	vars := mux.Vars(r)
-	result := re.db.Model(&data).Where("history_id = ?", vars["history_id"]).Updates(data)
+func (re *history_repo) ChangeHistory(id int, data *models.History) (*models.History, error) {
 
+	result := re.db.Model(&data).Where("history_id = ?", id).Updates(data)
 	if result.Error != nil {
 		return nil, errors.New("gagal update data")
 	}
 
-	if result.RowsAffected < 1 {
+	if result.RowsAffected == 0 {
 		return nil, errors.New("id history tidak ditemukan")
 	}
 
-	return nil, nil
+	return data, nil
 }
 
-func (re *history_repo) RemoveHistory(r *http.Request, data *models.History) (*models.History, error) {
-	vars := mux.Vars(r)
-	result := re.db.Delete(data, vars["history_id"])
+func (re *history_repo) RemoveHistory(id int, data *models.History) (*models.History, error) {
+	result := re.db.Delete(data, id)
 
 	if result.Error != nil {
 		return nil, errors.New("gagal menghapus data")
 	}
 
-	if result.RowsAffected < 1 {
+	if result.RowsAffected == 0 {
 		return nil, errors.New("id history tidak ditemukan")
 	}
 
@@ -74,10 +69,13 @@ func (re *history_repo) RemoveHistory(r *http.Request, data *models.History) (*m
 }
 
 // Search
-func (re *history_repo) FindHistoryByVehicleId(r *http.Request, data *models.Histories) (*models.Histories, error) {
+func (re *history_repo) FindHistoryByVehicleId(id int, data *models.Histories) (*models.Histories, error) {
 
-	vars := r.URL.Query().Get("vehicle_id")
-	result := re.db.Preload("User").Preload("Vehicle").Order("created_at desc").Where("vehicle_id = ?", vars).Find(&data)
+	result := re.db.Preload("User", func(db *gorm.DB) *gorm.DB {
+		return re.db.Select("user_id", "username")
+	}).Preload("Vehicle", func(db *gorm.DB) *gorm.DB {
+		return re.db.Select("vehicle_id", "name", "rating")
+	}).Order("created_at desc").Where("vehicle_id = ?", id).Find(&data)
 
 	if result.Error != nil {
 		return nil, errors.New("gagal mengambil data")

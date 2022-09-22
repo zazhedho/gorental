@@ -2,9 +2,7 @@ package users
 
 import (
 	"errors"
-	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/zazhedho/gorental/src/database/orm/models"
 	"gorm.io/gorm"
 )
@@ -19,7 +17,6 @@ func NewRepo(db *gorm.DB) *user_repo {
 
 func (re *user_repo) FindAllUsers() (*models.Users, error) {
 	var data models.Users
-
 	result := re.db.Order("created_at desc").Find(&data)
 
 	if result.Error != nil {
@@ -29,26 +26,34 @@ func (re *user_repo) FindAllUsers() (*models.Users, error) {
 	return &data, nil
 }
 
-func (re *user_repo) SaveUser(data *models.User) (*models.User, error) {
-	var exists models.Users
-
-	getNameEmail := re.db.Where("name = ? OR email = ?", data.Name, data.Email).Find(&exists)
-	if getNameEmail.RowsAffected != 0 {
-		return nil, errors.New("username atau email sudah terdaftar")
+func (re *user_repo) FindByUsername(username string) (*models.User, error) {
+	var data models.User
+	result := re.db.First(&data, "username = ?", username)
+	if result.Error != nil {
+		return nil, errors.New("gagal mengambil data")
 	}
 
+	return &data, nil
+}
+
+func (re *user_repo) UserExists(username, email string) bool {
+	var data models.User
+	result := re.db.First(&data, "username = ? OR email = ?", username, email)
+	return result.Error == nil
+}
+
+func (re *user_repo) SaveUser(data *models.User) (*models.User, error) {
 	result := re.db.Create(data)
 	if result.Error != nil {
 		return nil, errors.New("gagal menambah data")
 	}
 
-	return nil, nil
+	return data, nil
 }
 
-func (re *user_repo) ChangeUser(r *http.Request, data *models.User) (*models.User, error) {
-	vars := mux.Vars(r)
-	result := re.db.Model(&data).Where("name = ?", vars["name"]).Updates(data)
+func (re *user_repo) ChangeUser(username string, data *models.User) (*models.User, error) {
 
+	result := re.db.Model(&data).Where("username = ?", username).Updates(data)
 	if result.Error != nil {
 		return nil, errors.New("gagal update data")
 	}
@@ -57,12 +62,11 @@ func (re *user_repo) ChangeUser(r *http.Request, data *models.User) (*models.Use
 		return nil, errors.New("data user tidak ditemukan")
 	}
 
-	return nil, nil
+	return data, nil
 }
 
-func (re *user_repo) RemoveUser(r *http.Request, data *models.User) (*models.User, error) {
-	vars := mux.Vars(r)
-	result := re.db.Where("name = ?", vars["name"]).Delete(data)
+func (re *user_repo) RemoveUser(username string, data *models.User) (*models.User, error) {
+	result := re.db.Where("username = ?", username).Delete(data)
 
 	if result.Error != nil {
 		return nil, errors.New("gagal menghapus data")

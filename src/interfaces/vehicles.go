@@ -1,25 +1,26 @@
 package interfaces
 
 import (
-	"net/http"
-
 	"github.com/zazhedho/gorental/src/database/orm/models"
+	"github.com/zazhedho/gorental/src/helpers"
 )
 
 type VehicleRepo interface {
 	FindAllVehicles() (*models.Vehicles, error)
 	SaveVehicle(data *models.Vehicle) (*models.Vehicle, error)
-	ChangeVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error)
-	RemoveVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error)
-	FindVehicleName(r *http.Request, data *models.Vehicles) (*models.Vehicles, error)
+	ChangeVehicle(id int, data *models.Vehicle) (*models.Vehicle, error)
+	RemoveVehicle(id int, data *models.Vehicle) (*models.Vehicle, error)
+	FindVehicleName(name string, data *models.Vehicles) (*models.Vehicles, error)
+	SortByLocation(location string, data *models.Vehicles) (*models.Vehicles, error)
 	PopularVehicle() (*models.Vehicles, error)
 }
 
 type VehicleService interface {
-	GetAllVehicles() (*models.Vehicles, error)
-	AddVehicle(data *models.Vehicle) (*models.Vehicle, error)
-	UpdateVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error)
-	DeleteVehicle(r *http.Request, data *models.Vehicle) (*models.Vehicle, error)
-	GetVehicleName(r *http.Request, data *models.Vehicles) (*models.Vehicles, error)
-	PopularVehicle() (*models.Vehicles, error)
+	GetAllVehicles() *helpers.Response
+	AddVehicle(data *models.Vehicle) *helpers.Response
+	UpdateVehicle(id int, data *models.Vehicle) *helpers.Response
+	DeleteVehicle(id int, data *models.Vehicle) *helpers.Response
+	GetVehicleName(name string, data *models.Vehicles) *helpers.Response
+	SortByLocation(location string, data *models.Vehicles) *helpers.Response
+	PopularVehicle() *helpers.Response
 }
