@@ -1,4 +1,4 @@
-# gorental
+# Go-rent Golang
 
 <h1 align="center">
   Vehicle-Rent RESTfull API With Gorilla/mux, Gorm
