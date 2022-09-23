@@ -10,8 +10,8 @@ import (
 var mySecrets = []byte(os.Getenv("JWT_KEYS"))
 
 type claims struct {
-	Username string
-	Role     string
+	Username string `json:"username"`
+	Role     string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -30,7 +30,28 @@ func (c *claims) Create() (string, error) {
 	return tokens.SignedString(mySecrets)
 }
 
-func CheckToken(token string) (*claims, error) {
+func CheckToken(token, role string) (bool, error) {
+	tokens, err := jwt.ParseWithClaims(token, &claims{Role: role}, func(t *jwt.Token) (interface{}, error) {
+		return []byte(mySecrets), nil
+	})
+
+	if err != nil {
+		return false, err
+	}
+
+	claim := tokens.Claims.(*claims)
+	if claim.Role == role {
+		return tokens.Valid, nil
+	} else {
+		if claim.Role == "admin" {
+			return tokens.Valid, nil
+		} else {
+			return false, err
+		}
+	}
+}
+
+func EksportToken(token string) (*claims, error) {
 	tokens, err := jwt.ParseWithClaims(token, &claims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(mySecrets), nil
 	})
@@ -40,5 +61,5 @@ func CheckToken(token string) (*claims, error) {
 	}
 
 	claim := tokens.Claims.(*claims)
-	return claim, err
+	return claim, nil
 }

@@ -51,7 +51,7 @@ func (s *user_service) AddUser(data *models.User) *helpers.Response {
 
 func (s *user_service) UpdateUser(username string, data *models.User) *helpers.Response {
 	if check := s.repo.UserExists(data.Username, data.Email); check {
-		return helpers.New("username sudah terdaftar", 400, true)
+		return helpers.New("username ini sudah digunakan", 400, true)
 	}
 
 	hashPassword, err := helpers.HashPassword(data.Password)

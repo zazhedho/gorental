@@ -1,6 +1,9 @@
 package config
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+	"github.com/zazhedho/gorental/src/database/orm"
+)
 
 var initCommand = cobra.Command{
 	Short: "simple api with golang",
@@ -8,6 +11,7 @@ var initCommand = cobra.Command{
 
 func init() {
 	initCommand.AddCommand(ServeCmd)
+	initCommand.AddCommand(orm.MigrateCmd)
 }
 
 func Run(args []string) error {

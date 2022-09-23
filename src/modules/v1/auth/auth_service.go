@@ -21,7 +21,7 @@ func NewService(svc interfaces.UserRepo) *auth_service {
 func (a auth_service) Login(body models.User) *helpers.Response {
 	user, err := a.repo.FindByUsername(body.Username)
 	if err != nil {
-		return helpers.New("username tidak terdaftar", 401, true)
+		return helpers.New("username tidak terdaftar", 404, true)
 	}
 
 	if !helpers.CheckPassword(user.Password, body.Password) {

@@ -17,7 +17,7 @@ func New(rt *mux.Router, db *gorm.DB) {
 	route.HandleFunc("/search", ctrl.GetVehicleName).Methods("GET")
 	route.HandleFunc("/sort", ctrl.SortByLocation).Methods("GET")
 	route.HandleFunc("", ctrl.GetAllVehicles).Methods("GET")
-	route.HandleFunc("", middleware.CheckAuth(ctrl.AddVehicle)).Methods("POST")
-	route.HandleFunc("/{id}", middleware.CheckAuth(ctrl.UpdateVehicle)).Methods("PUT")
-	route.HandleFunc("/{id}", middleware.CheckAuth(ctrl.DeleteVehicle)).Methods("DELETE")
+	route.HandleFunc("", middleware.MultipleMiddleware(ctrl.AddVehicle, "admin", middleware.CheckAuth)).Methods("POST")
+	route.HandleFunc("/{id}", middleware.MultipleMiddleware(ctrl.UpdateVehicle, "admin", middleware.CheckAuth)).Methods("PUT")
+	route.HandleFunc("/{id}", middleware.MultipleMiddleware(ctrl.DeleteVehicle, "admin", middleware.CheckAuth)).Methods("DELETE")
 }
