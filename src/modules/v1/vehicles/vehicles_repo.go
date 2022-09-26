@@ -72,7 +72,7 @@ func (re *vehicle_repo) FindVehicleName(name string, data *models.Vehicles) (*mo
 		return nil, errors.New("gagal mengambil data")
 	}
 
-	if result.RowsAffected == 1 {
+	if result.RowsAffected == 0 {
 		return nil, errors.New("data kendaraan tidak ditemukan")
 	}
 

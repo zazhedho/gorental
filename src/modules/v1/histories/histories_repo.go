@@ -81,7 +81,7 @@ func (re *history_repo) FindHistoryByVehicleId(id int, data *models.Histories) (
 		return nil, errors.New("gagal mengambil data")
 	}
 
-	if result.RowsAffected < 1 {
+	if result.RowsAffected == 0 {
 		return nil, errors.New("data tidak ditemukan")
 	}
 

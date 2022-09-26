@@ -3,10 +3,18 @@ module github.com/zazhedho/gorental
 go 1.19
 
 require (
-	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/go-gormigrate/gormigrate/v2 v2.0.2 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/go-gormigrate/gormigrate/v2 v2.0.2
+	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/gorilla/mux v1.8.0
+	github.com/gorilla/schema v1.2.0
+	github.com/joho/godotenv v1.4.0
+	github.com/spf13/cobra v1.5.0
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
+	gorm.io/driver/postgres v1.3.9
+	gorm.io/gorm v1.23.10
+)
+
+require (
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
 	github.com/jackc/pgconn v1.13.0 // indirect
@@ -18,12 +26,6 @@ require (
 	github.com/jackc/pgx/v4 v4.17.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/joho/godotenv v1.4.0 // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
-	github.com/spf13/cobra v1.5.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	gorm.io/driver/postgres v1.3.9 // indirect
-	gorm.io/gorm v1.23.10 // indirect
 )

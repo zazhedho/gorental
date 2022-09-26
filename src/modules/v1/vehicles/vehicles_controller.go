@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/schema"
 	"github.com/zazhedho/gorental/src/database/orm/models"
 	"github.com/zazhedho/gorental/src/helpers"
 	"github.com/zazhedho/gorental/src/interfaces"
@@ -27,7 +28,8 @@ func (c *vehicle_ctrl) GetAllVehicles(w http.ResponseWriter, r *http.Request) {
 func (c *vehicle_ctrl) AddVehicle(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Vehicle
-	err := json.NewDecoder(r.Body).Decode(&data)
+	helpers.Upload(&data, w, r)
+	err := schema.NewDecoder().Decode(&data, r.MultipartForm.Value)
 	if err != nil {
 		helpers.New(err, 500, true)
 		return
