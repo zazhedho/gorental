@@ -31,7 +31,7 @@ go mod tidy
 3. Run the app
 
 ```bash
-go run *.go
+go run main.go server
 ```
 
 4. Add Env
@@ -46,9 +46,17 @@ go run *.go
   DB_PASS = Your DB Password
 ```
 
+5. Database Migration and Rollback
+
+```bash
+go run main.go migrate --up //for database migration
+# or
+go run main.go migrate --down //for rollback
+```
+
 ## 💻 Built with
 
-- [Golang](https://go.dev/)
+- [Golang](https://go.dev/): Go Programming Language
 - [gorilla/mux](https://github.com/gorilla/mux): for handle http request
 - [Postgres](https://www.postgresql.org/): for DBMS
 
