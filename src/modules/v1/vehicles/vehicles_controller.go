@@ -28,7 +28,8 @@ func (c *vehicle_ctrl) GetAllVehicles(w http.ResponseWriter, r *http.Request) {
 func (c *vehicle_ctrl) AddVehicle(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Vehicle
-	helpers.Upload(&data, w, r)
+	data.Image = r.Context().Value("imgName").(string)
+
 	err := schema.NewDecoder().Decode(&data, r.MultipartForm.Value)
 	if err != nil {
 		helpers.New(err, 500, true)
