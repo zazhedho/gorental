@@ -20,7 +20,7 @@ func server(cmd *cobra.Command, args []string) error {
 	if mainRoute, err := routers.New(); err == nil {
 
 		var addrs string = "0.0.0.0:8080"
-		if port := os.Getenv("APP_PORT"); port != "" {
+		if port := os.Getenv("PORT"); port != "" {
 			addrs = ":" + port
 		}
 
@@ -32,7 +32,7 @@ func server(cmd *cobra.Command, args []string) error {
 			Handler:      mainRoute,
 		}
 
-		fmt.Println("App running on port", addrs)
+		fmt.Println("App running on http://" + addrs)
 		srv.ListenAndServe()
 		return nil
 
