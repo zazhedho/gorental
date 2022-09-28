@@ -19,4 +19,6 @@ tmp
 .env
 .air.toml
 
-images
+*.jpg
+*.jpeg
+*.png
