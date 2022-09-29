@@ -9,15 +9,15 @@ import (
 
 var mySecrets = []byte(os.Getenv("JWT_KEYS"))
 
-type claims struct {
+type Claims struct {
 	Username string `json:"username"`
 	Role     string `json:"role"`
 	jwt.RegisteredClaims
 }
 
 // digunakan di service
-func NewToken(username, role string) *claims {
-	return &claims{
+func NewToken(username, role string) *Claims {
+	return &Claims{
 		Username: username,
 		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -26,14 +26,14 @@ func NewToken(username, role string) *claims {
 	}
 }
 
-func (c *claims) Create() (string, error) {
+func (c *Claims) Create() (string, error) {
 	tokens := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
 	return tokens.SignedString(mySecrets)
 }
 
 // lempar ke authValidate
 func CheckToken(token, role string) (bool, error) {
-	tokens, err := jwt.ParseWithClaims(token, &claims{Role: role}, func(t *jwt.Token) (interface{}, error) {
+	tokens, err := jwt.ParseWithClaims(token, &Claims{Role: role}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(mySecrets), nil
 	})
 
@@ -41,7 +41,7 @@ func CheckToken(token, role string) (bool, error) {
 		return false, err
 	}
 
-	claim := tokens.Claims.(*claims)
+	claim := tokens.Claims.(*Claims)
 	if claim.Role == role {
 		return tokens.Valid, nil
 	} else {
@@ -54,8 +54,8 @@ func CheckToken(token, role string) (bool, error) {
 }
 
 // juga digunakan di authValidate
-func EksportToken(token string) (*claims, error) {
-	tokens, err := jwt.ParseWithClaims(token, &claims{}, func(t *jwt.Token) (interface{}, error) {
+func EksportToken(token string) (*Claims, error) {
+	tokens, err := jwt.ParseWithClaims(token, &Claims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(mySecrets), nil
 	})
 
@@ -63,6 +63,6 @@ func EksportToken(token string) (*claims, error) {
 		return nil, err
 	}
 
-	claim := tokens.Claims.(*claims)
+	claim := tokens.Claims.(*Claims)
 	return claim, nil
 }
