@@ -22,3 +22,5 @@ tmp
 *.jpg
 *.jpeg
 *.png
+
+node_modules

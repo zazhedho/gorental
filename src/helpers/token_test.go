@@ -12,9 +12,9 @@ func TestNewToken(t *testing.T) {
 	assert.Equal(t, "dho", result.Username, "Expect username = dho")
 }
 
-func BenchmarkNewToken(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		NewToken("dho", "admin")
-	}
+// func TestCheckToken(t *testing.T) {
+// 	result, err := CheckToken("abc", "admin")
 
-}
+// 	assert.True(t, true, result, "result must be true")
+// 	assert.Equal(t, nil, err, "error must be nil")
+// }

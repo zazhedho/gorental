@@ -63,7 +63,7 @@ func getStatus(status int) string {
 	case 304:
 		desc = "Not Modified"
 	default:
-		desc = ""
+		desc = "Undefined"
 	}
 
 	return desc

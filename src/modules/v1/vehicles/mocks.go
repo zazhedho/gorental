@@ -20,22 +20,22 @@ func (m *RepoVehicleMock) SaveVehicle(data *models.Vehicle) (*models.Vehicle, er
 }
 
 func (m *RepoVehicleMock) ChangeVehicle(id int, data *models.Vehicle) (*models.Vehicle, error) {
-	args := m.mock.Called()
+	args := m.mock.Called(id, data)
 	return args.Get(0).(*models.Vehicle), nil
 }
 
 func (m *RepoVehicleMock) RemoveVehicle(id int, data *models.Vehicle) (*models.Vehicle, error) {
-	args := m.mock.Called()
+	args := m.mock.Called(id, data)
 	return args.Get(0).(*models.Vehicle), nil
 }
 
 func (m *RepoVehicleMock) FindVehicleName(name string, data *models.Vehicles) (*models.Vehicles, error) {
-	args := m.mock.Called()
+	args := m.mock.Called(name, data)
 	return args.Get(0).(*models.Vehicles), nil
 }
 
 func (m *RepoVehicleMock) SortByLocation(location string, data *models.Vehicles) (*models.Vehicles, error) {
-	args := m.mock.Called()
+	args := m.mock.Called(location, data)
 	return args.Get(0).(*models.Vehicles), nil
 }
 
