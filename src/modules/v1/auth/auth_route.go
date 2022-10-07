@@ -7,11 +7,11 @@ import (
 )
 
 func New(rt *mux.Router, db *gorm.DB) {
-	route := rt.PathPrefix("/api/v1/auth").Subrouter()
+	route := rt.PathPrefix("/api/v1").Subrouter()
 
 	repo := users.NewRepo(db)
 	svc := NewService(repo)
 	ctrl := NewCtrl(svc)
 
-	route.HandleFunc("", ctrl.SignIn).Methods("POST")
+	route.HandleFunc("/login", ctrl.SignIn).Methods("POST")
 }
