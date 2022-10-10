@@ -23,6 +23,12 @@ func (s *vehicle_service) GetAllVehicles() *helpers.Response {
 }
 
 func (s *vehicle_service) AddVehicle(data *models.Vehicle) *helpers.Response {
+	fileURL, err := helpers.CloudUpload(data.Image)
+	if err != nil {
+		return helpers.New(err.Error(), 500, true)
+	}
+	data.Image = fileURL
+
 	result, err := s.repo.SaveVehicle(data)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
