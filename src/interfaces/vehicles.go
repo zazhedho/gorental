@@ -13,6 +13,7 @@ type VehicleRepo interface {
 	FindVehicleName(name string, data *models.Vehicles) (*models.Vehicles, error)
 	SortByLocation(location string, data *models.Vehicles) (*models.Vehicles, error)
 	PopularVehicle() (*models.Vehicles, error)
+	SortBytype(category string, data *models.Vehicles) (*models.Vehicles, error)
 }
 
 type VehicleService interface {
@@ -23,4 +24,5 @@ type VehicleService interface {
 	GetVehicleName(name string, data *models.Vehicles) *helpers.Response
 	SortByLocation(location string, data *models.Vehicles) *helpers.Response
 	PopularVehicle() *helpers.Response
+	SortByType(location string, data *models.Vehicles) *helpers.Response
 }

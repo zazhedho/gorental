@@ -74,3 +74,12 @@ func (s *vehicle_service) PopularVehicle() *helpers.Response {
 
 	return helpers.New(result, 200, false)
 }
+
+func (s *vehicle_service) SortByType(location string, data *models.Vehicles) *helpers.Response {
+	result, err := s.repo.SortBytype(location, data)
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+
+	return helpers.New(result, 200, false)
+}

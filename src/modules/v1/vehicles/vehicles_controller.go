@@ -87,3 +87,10 @@ func (c *vehicle_ctrl) SortByLocation(w http.ResponseWriter, r *http.Request) {
 func (c *vehicle_ctrl) PopularVehicle(w http.ResponseWriter, r *http.Request) {
 	c.svc.PopularVehicle().Send(w)
 }
+
+func (c *vehicle_ctrl) SortByType(w http.ResponseWriter, r *http.Request) {
+
+	var data models.Vehicles
+	category := strings.ToLower(r.URL.Query().Get("category"))
+	c.svc.SortByType(category, &data).Send(w)
+}

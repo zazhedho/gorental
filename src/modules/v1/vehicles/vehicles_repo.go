@@ -104,3 +104,17 @@ func (re *vehicle_repo) PopularVehicle() (*models.Vehicles, error) {
 
 	return &data, nil
 }
+
+func (re *vehicle_repo) SortBytype(category string, data *models.Vehicles) (*models.Vehicles, error) {
+
+	result := re.db.Order("vehicle_id desc").Where("LOWER(category) LIKE ?", "%"+category+"%").Find(&data)
+	if result.Error != nil {
+		return nil, errors.New("gagal mengambil data")
+	}
+
+	if result.RowsAffected == 0 {
+		return nil, errors.New("type kendaraan tidak ditemukan")
+	}
+
+	return data, nil
+}

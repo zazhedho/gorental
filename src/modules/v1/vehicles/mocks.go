@@ -43,3 +43,8 @@ func (m *RepoVehicleMock) PopularVehicle() (*models.Vehicles, error) {
 	args := m.mock.Called()
 	return args.Get(0).(*models.Vehicles), nil
 }
+
+func (m *RepoVehicleMock) SortBytype(category string, data *models.Vehicles) (*models.Vehicles, error) {
+	args := m.mock.Called(category, data)
+	return args.Get(0).(*models.Vehicles), nil
+}
