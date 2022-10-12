@@ -118,7 +118,7 @@ func Cloudinary(role string, next http.HandlerFunc) http.HandlerFunc {
 		cld, errs := cloudinary.NewFromParams(os.Getenv("CLOUD_NAME"), os.Getenv("CLOUD_KEY"), os.Getenv("CLOUD_SEC"))
 
 		if errs != nil {
-			helpers.New(err.Error(), 400, true).Send(w)
+			helpers.New(errs.Error(), 400, true).Send(w)
 			return
 		}
 
@@ -129,7 +129,7 @@ func Cloudinary(role string, next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		helpers.New(err.Error(), 400, true).Send(w)
+		helpers.New("success", 400, true).Send(w)
 
 		ctx := context.WithValue(r.Context(), "imageName", upload.SecureURL)
 
