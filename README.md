@@ -44,6 +44,10 @@ go run main.go server
   DB_HOST = Your DB Host
   DB_NAME = Your DB Name
   DB_PASS = Your DB Password
+
+  CLOUD_NAME = Your Cloudinary Name
+  CLOUD_KEY = Your Cloudinary Key
+  CLOUD_SEC = Your Cloudinary Secret
 ```
 
 5. Database Migration and Rollback
