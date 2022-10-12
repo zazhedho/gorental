@@ -28,15 +28,22 @@ func (c *vehicle_ctrl) GetAllVehicles(w http.ResponseWriter, r *http.Request) {
 func (c *vehicle_ctrl) AddVehicle(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Vehicle
+	var decoder = schema.NewDecoder()
 	// data.Image = r.Context().Value("imgName").(string)
 
-	err := schema.NewDecoder().Decode(&data, r.MultipartForm.Value)
+	err := r.ParseForm()
 	if err != nil {
 		helpers.New(err, 500, true)
 		return
 	}
 
-	uploads := r.Context().Value("imgName")
+	err = decoder.Decode(&data, r.PostForm)
+	if err != nil {
+		helpers.New(err, 500, true)
+		return
+	}
+
+	uploads := r.Context().Value("file")
 	if uploads != nil {
 		data.Image = uploads.(string)
 	}
