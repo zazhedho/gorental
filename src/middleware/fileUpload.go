@@ -2,11 +2,14 @@ package middleware
 
 import (
 	"context"
-	"fmt"
-	"io"
-	"log"
 	"net/http"
 	"os"
+	"strings"
+	"time"
+
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
+	"github.com/zazhedho/gorental/src/helpers"
 )
 
 // func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
@@ -38,46 +41,98 @@ import (
 // 	}
 // }
 
-func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-type", "application/json")
+// func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		w.Header().Set("Content-type", "application/json")
 
-		var pathfile string
+// 		var pathfile string
 
-		err := r.ParseForm()
+// 		err := r.ParseForm()
+// 		if err != nil {
+// 			http.Error(w, err.Error(), http.StatusBadRequest)
+// 			return
+// 		}
+
+// 		if err := r.ParseMultipartForm(32 << 20); err != nil {
+// 			http.Error(w, err.Error(), http.StatusBadRequest)
+// 			return
+// 		}
+
+// 		for _, fheaders := range r.MultipartForm.File {
+// 			for _, hdr := range fheaders {
+// 				infile, err := hdr.Open()
+// 				if err != nil {
+// 					fmt.Fprint(w, err.Error())
+// 				}
+
+// 				pathfile = "/tmp/" + hdr.Filename
+// 				outfile, err := os.Create(pathfile)
+// 				if err != nil {
+// 					fmt.Fprint(w, err.Error())
+// 				}
+
+// 				defer outfile.Close()
+// 				io.Copy(outfile, infile)
+// 			}
+// 		}
+
+// 		log.Println("Upload Middleware Pass")
+// 		// share context to controller
+// 		ctx := context.WithValue(r.Context(), "file", pathfile)
+
+// 		// Serve the next handler
+// 		next.ServeHTTP(w, r.WithContext(ctx))
+// 	})
+// }
+
+func Cloudinary(role string, next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		//**parse multipart/form-data
+		if err := r.ParseMultipartForm(20 << 20); err != nil {
+			helpers.New(err.Error(), 400, true).Send(w)
+			return
+		}
+
+		file, handlerFile, err := r.FormFile("image")
+
+		defer file.Close()
+
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			helpers.New(err.Error(), 400, true).Send(w)
 			return
 		}
 
-		if err := r.ParseMultipartForm(32 << 20); err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+		cntx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+
+		//**file validation
+		checkType := handlerFile.Header.Get("Content-Type") == "image/jpeg" || handlerFile.Header.Get("Content-Type") == "image/jpg" || handlerFile.Header.Get("Content-Type") == "image/png"
+
+		if !checkType {
+			helpers.New(err.Error(), 400, true).Send(w)
 			return
 		}
 
-		for _, fheaders := range r.MultipartForm.File {
-			for _, hdr := range fheaders {
-				infile, err := hdr.Open()
-				if err != nil {
-					fmt.Fprint(w, err.Error())
-				}
+		name := strings.ReplaceAll(strings.ReplaceAll(time.Now().Format(time.ANSIC), ":", "-")+"-"+handlerFile.Filename, " ", "_")
 
-				pathfile = "/tmp/" + hdr.Filename
-				outfile, err := os.Create(pathfile)
-				if err != nil {
-					fmt.Fprint(w, err.Error())
-				}
+		cld, errs := cloudinary.NewFromParams(os.Getenv("CLOUD_NAME"), os.Getenv("CLOUD_KEY"), os.Getenv("CLOUD_SEC"))
 
-				defer outfile.Close()
-				io.Copy(outfile, infile)
-			}
+		if errs != nil {
+			helpers.New(err.Error(), 400, true).Send(w)
+			return
 		}
 
-		log.Println("Upload Middleware Pass")
-		// share context to controller
-		ctx := context.WithValue(r.Context(), "file", pathfile)
+		upload, err2 := cld.Upload.Upload(cntx, file, uploader.UploadParams{Folder: "image", PublicID: name})
 
-		// Serve the next handler
+		if err2 != nil {
+			helpers.New(err2.Error(), 400, true).Send(w)
+			return
+		}
+
+		helpers.New(err.Error(), 400, true).Send(w)
+
+		ctx := context.WithValue(r.Context(), "imageName", upload.SecureURL)
+
 		next.ServeHTTP(w, r.WithContext(ctx))
-	})
+	}
 }
