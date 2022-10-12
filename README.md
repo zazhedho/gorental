@@ -64,6 +64,10 @@ go run main.go migrate --down //for rollback
 - [gorilla/mux](https://github.com/gorilla/mux): for handle http request
 - [Postgres](https://www.postgresql.org/): for DBMS
 
+## Frontend Repository
+
+Frontend : react-VehicleRental [here](https://github.com/zazhedho/react-rental.git)
+
 ## 🚀 About Me
 
 - Linkedin : [Zaidus Zhuhur](https://www.linkedin.com/in/zaidus-zhuhur/)
