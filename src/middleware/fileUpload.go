@@ -4,13 +4,14 @@ import (
 	"context"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/zazhedho/gorental/src/helpers"
 )
+
+// Upload to local storage
 
 // func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
 // 	return func(w http.ResponseWriter, r *http.Request) {
@@ -113,7 +114,7 @@ func Cloudinary(role string, next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		name := strings.ReplaceAll(strings.ReplaceAll(time.Now().Format(time.ANSIC), ":", "-")+"-"+handlerFile.Filename, " ", "_")
+		name := time.Now().Format("2006-01-02_15:04:05") + "_" + handlerFile.Filename
 
 		cld, errs := cloudinary.NewFromParams(os.Getenv("CLOUD_NAME"), os.Getenv("CLOUD_KEY"), os.Getenv("CLOUD_SEC"))
 
