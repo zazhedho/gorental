@@ -63,7 +63,7 @@ func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
 					fmt.Fprint(w, err.Error())
 				}
 
-				pathfile = "tmp/" + time.Now().Format("2006-01-02_15:04:05") + "_" + hdr.Filename
+				pathfile = "/tmp/" + time.Now().Format("2006-01-02_15:04:05") + "_" + hdr.Filename
 				outfile, err := os.Create(pathfile)
 				if err != nil {
 					fmt.Fprint(w, err.Error())
