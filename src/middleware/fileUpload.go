@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 )
 
 // func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
@@ -63,7 +62,7 @@ func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
 					fmt.Fprint(w, err.Error())
 				}
 
-				pathfile = "/tmp/" + time.Now().Format("2006-01-02_15:04:05") + "_" + hdr.Filename
+				pathfile = "/tmp/" + hdr.Filename
 				outfile, err := os.Create(pathfile)
 				if err != nil {
 					fmt.Fprint(w, err.Error())
