@@ -20,8 +20,8 @@ func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
 		}
 		defer file.Close()
 
-		fileName := time.Now().Format("2006-01-02_15:04:05") + "_" + fileHeader.Filename
-		fileDestination, err := os.Create("src/images/" + fileName)
+		fileName := "tmp/" + time.Now().Format("2006-01-02_15:04:05") + "_" + fileHeader.Filename
+		fileDestination, err := os.Create(fileName)
 		if err != nil {
 			helpers.New(err.Error(), 400, true)
 			return
@@ -33,7 +33,7 @@ func FileUpload(role string, next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "imgName", "src/images/"+fileName)
+		ctx := context.WithValue(r.Context(), "imgName", fileName)
 		next.ServeHTTP(w, r.WithContext(ctx))
 
 	}
