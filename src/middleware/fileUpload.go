@@ -82,8 +82,6 @@ func Cloudinary(role string, next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		helpers.New("success", 200, false).Send(w)
-
 		ctx := context.WithValue(r.Context(), "imageName", upload.SecureURL)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}
